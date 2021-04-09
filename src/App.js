@@ -2,7 +2,7 @@ import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RegisterForm from "./routes/RegisterForm";
-import SignIn from "./login";
+import Login from "./login";
 import AppHeader from "./components/AppHeader";
 import { FirebaseAuthProvider } from "@react-firebase/auth";
 import firebase from "firebase/app";
@@ -15,7 +15,7 @@ function App() {
         <div className="App">
           <AppHeader />
           <Switch>
-            <Route path={"/login"} component={SignIn} />
+            <Route path={"/login"} component={Login} />
             <Route path={"/register"} component={RegisterForm} />
           </Switch>
         </div>
