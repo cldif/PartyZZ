@@ -1,26 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
+import MuiAlert from "@material-ui/lab/Alert";
 import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import LocalBarIcon from "@material-ui/icons/LocalBar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Paper } from "@material-ui/core";
+import { Paper, Snackbar } from "@material-ui/core";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
+  paperContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -60%)",
+  },
   paper: {
-    marginTop: theme.spacing(8),
     padding: theme.spacing(3),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
-  avatar: {
+  loginIcon: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
@@ -32,66 +38,98 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
 
+  const [email, setEmail] = useState(undefined);
+  const [password, setPassword] = useState(undefined);
+
+  const [mailError, setMailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [displayErrorSnackBar, setDisplayErrorSnackBar] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((value) => console.log({ value }))
+      .catch((_error) => {
+        setDisplayErrorSnackBar(true);
+        setMailError(true);
+        setPasswordError(true);
+      });
+  };
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Paper elevation={3} className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+    <div>
+      <Container className={classes.paperContainer} maxWidth="xs">
+        <Paper elevation={3} className={classes.paper}>
+          <Avatar className={classes.loginIcon}>
+            <LocalBarIcon />
+          </Avatar>
 
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
 
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              error={mailError}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              label="Email Address"
+              autoFocus
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setMailError(false);
+              }}
+            />
+            <TextField
+              error={passwordError}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setPasswordError(false);
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
-    </Container>
+          </form>
+        </Paper>
+      </Container>
+
+      <Snackbar
+        open={displayErrorSnackBar}
+        autoHideDuration={1000}
+        onClose={() => setDisplayErrorSnackBar(false)}
+      >
+        <MuiAlert elevation={6} variant="filled" severity="error">
+          Your email and password are not recognized.
+        </MuiAlert>
+      </Snackbar>
+    </div>
   );
 }
