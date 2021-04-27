@@ -7,6 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import {FirebaseAuthConsumer} from "@react-firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,8 +34,25 @@ export default function AppHeader() {
                     <Typography edge="start" variant="h6" className={classes.title}>
                         PartyZZ
                     </Typography>
-                    <Button component={Link} color="inherit" to={'/login'}>Login</Button>
-                    <Button component={Link} color="inherit" to={'/register'}>Register</Button>
+                    <FirebaseAuthConsumer>
+                        {({isSignedIn, firebase}) => {
+                            if (isSignedIn === true) {
+                                return (
+                                    <div>
+                                        <Button color="inherit" onClick={() => firebase.app().auth().signOut()}>Sign out</Button>
+                                    </div>
+                                );
+                            }
+                            else {
+                                return(
+                                    <div>
+                                        <Button component={Link} color="inherit" to={'/login'}>Login</Button>
+                                        <Button component={Link} color="inherit" to={'/register'}>Register</Button>
+                                    </div>
+                                );
+                            }
+                        }}
+                    </FirebaseAuthConsumer>
                 </Toolbar>
             </AppBar>
         </div>

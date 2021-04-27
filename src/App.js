@@ -1,19 +1,24 @@
 import './App.css';
-import React, { Component } from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Register from "./Register";
+import RegisterForm from "./RegisterForm";
 import AppHeader from "./AppHeader";
+import {FirebaseAuthProvider} from "@react-firebase/auth";
+import firebase from "firebase/app";
+import {firebaseConfig} from "./index";
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <AppHeader/>
-                <Switch>
-                    <Route path={'/register'} component={Register}/>
-                </Switch>
-            </div>
-        </Router>
+        <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
+            <Router>
+                <div className="App">
+                    <AppHeader/>
+                    <Switch>
+                        <Route path={'/register'} component={RegisterForm}/>
+                    </Switch>
+                </div>
+            </Router>
+        </FirebaseAuthProvider>
     );
 }
 
