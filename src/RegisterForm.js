@@ -13,6 +13,7 @@ import Container from '@material-ui/core/Container';
 import CoolErrorDisplay from "./CoolErrorDisplay";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 import {FirebaseAuthConsumer} from "@react-firebase/auth";
 import { Redirect } from 'react-router-dom';
 
@@ -49,15 +50,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function RegisterForm(props) {
+export default function RegisterForm() {
 
 
     const [state, setState] = React.useState({
         email: "",
         password: "",
+        confirmPassword: "",
         name: "",
         forname: "",
-        confirmPassword: "",
+        nickname: "",
     })
     let baseErrorState = {
         error: "",
@@ -65,7 +67,6 @@ export default function RegisterForm(props) {
         passwordError: false,
         passwordConfirmError: false,
     };
-    console.log(firebase.app().auth().currentUser);
     const [errorState, setErrorState] = React.useState(baseErrorState)
 
     const handleChange = (e) => {
@@ -113,6 +114,24 @@ export default function RegisterForm(props) {
                         break;
                 }
             });
+
+            // Extra work after success
+            if(firebase.app().auth().currentUser !== null){
+                let profile = {
+                    name: state.name,
+                    forname: state.forname,
+                    nickname: state.nickname,
+                    photoURL: "",
+                    imageName: "",
+                    id: firebase.app().auth().currentUser.uid
+                }
+                await firebase.app().database().ref('/profiles/'+firebase.app().auth().currentUser.uid).set(profile).catch((error) => {
+                        setErrorState(prevState => ({
+                                ...prevState, error: error.message
+                            }
+                        ))
+                });
+            }
         } else {
             setErrorState(prevState => ({
                     ...prevState, error: "Password do not match", passwordError: true, passwordConfirmError: true
@@ -165,6 +184,20 @@ export default function RegisterForm(props) {
                                                 name="name"
                                                 value={state.name}
                                                 autoComplete="lname"
+                                                onChange={handleChange}
+
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                variant="outlined"
+                                                required
+                                                fullWidth
+                                                id="nickname"
+                                                label="Nickname"
+                                                name="nickname"
+                                                value={state.nickname}
+                                                autoComplete="nickname"
                                                 onChange={handleChange}
 
                                             />
