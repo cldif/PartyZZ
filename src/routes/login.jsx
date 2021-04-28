@@ -12,6 +12,7 @@ import Container from "@material-ui/core/Container";
 import { Paper, Snackbar } from "@material-ui/core";
 import firebase from "firebase/app";
 import "firebase/auth";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paperContainer: {
@@ -35,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Login(props) {
   const classes = useStyles();
 
+  const [successfulLogin, setSuccessfulLogin] = useState(false);
   const [email, setEmail] = useState(undefined);
   const [password, setPassword] = useState(undefined);
 
@@ -50,7 +52,7 @@ export default function Login() {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((value) => console.log({ value }))
+      .then(() => setSuccessfulLogin(true))
       .catch((_error) => {
         setDisplayErrorSnackBar(true);
         setMailError(true);
@@ -58,7 +60,9 @@ export default function Login() {
       });
   };
 
-  return (
+  return successfulLogin ? (
+    <Redirect to={props.location.state?.from || "/"} />
+  ) : (
     <div>
       <Container className={classes.paperContainer} maxWidth="xs">
         <Paper elevation={3} className={classes.paper}>
