@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import 'fontsource-roboto';
 import firebase from "firebase/app";
 
-firebase.initializeApp({
+export const firebaseConfig = {
   apiKey: "AIzaSyDlZ0MV9YtQmUSmLKpgcSfXYWorEP57n1c",
   authDomain: "partyzz.firebaseapp.com",
   databaseURL: "https://partyzz-default-rtdb.firebaseio.com",
@@ -14,7 +14,9 @@ firebase.initializeApp({
   storageBucket: "partyzz.appspot.com",
   messagingSenderId: "197219309017",
   appId: "1:197219309017:web:53a2af9b6a7cc9a42b75c8",
-});
+}
+
+firebase.initializeApp(firebaseConfig);
 
 ReactDOM.render(
   <React.StrictMode>

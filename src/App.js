@@ -1,25 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import RegisterForm from "./routes/RegisterForm";
+import AppHeader from "./components/AppHeader";
+import {FirebaseAuthProvider} from "@react-firebase/auth";
+import firebase from "firebase/app";
+import {firebaseConfig} from "./index";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
+            <Router>
+                <div className="App">
+                    <AppHeader/>
+                    <Switch>
+                        <Route path={'/register'} component={RegisterForm}/>
+                    </Switch>
+                </div>
+            </Router>
+        </FirebaseAuthProvider>
+    );
 }
 
 export default App;
