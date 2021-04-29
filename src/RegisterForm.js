@@ -63,9 +63,12 @@ export default function RegisterForm() {
     })
     let baseErrorState = {
         error: "",
-        mailError: false,
-        passwordError: false,
-        passwordConfirmError: false,
+        email: false,
+        password: false,
+        confirmPassword: false,
+        name: false,
+        nickname: false,
+        forname: false,
     };
     const [errorState, setErrorState] = React.useState(baseErrorState)
 
@@ -81,7 +84,15 @@ export default function RegisterForm() {
         setErrorState(baseErrorState);
         event.preventDefault();
 
-        if (state.password === state.confirmPassword) {
+        Object.keys(state).forEach((key) => {
+            if(state[key] === ""){
+                setErrorState(prevState => ({
+                    ...prevState, [key]: true
+                }))
+            }
+        })
+
+        if (state.email !== "" && state.password === state.confirmPassword) {
             await firebase.app().auth().createUserWithEmailAndPassword(state.email, state.password).catch((error) => {
                 setErrorState(prevState => ({
                         ...prevState, error: error.message
@@ -90,25 +101,25 @@ export default function RegisterForm() {
                 switch (error.code) {
                     case "auth/email-already-in-use":
                         setErrorState(prevState => ({
-                                ...prevState, mailError: true
+                                ...prevState, email: true
                             }
                         ))
                         break;
                     case "auth/weak-password":
                         setErrorState(prevState => ({
-                                ...prevState, passwordError: true
+                                ...prevState, password: true
                             }
                         ))
                         break;
                     case "auth/invalid-email":
                         setErrorState(prevState => ({
-                                ...prevState, mailError: true
+                                ...prevState, email: true
                             }
                         ))
                         break;
                     default:
                         setErrorState(prevState => ({
-                                ...prevState, mailError: true, passwordError: true
+                                ...prevState, email: true, password: true
                             }
                         ))
                         break;
@@ -134,7 +145,7 @@ export default function RegisterForm() {
             }
         } else {
             setErrorState(prevState => ({
-                    ...prevState, error: "Password do not match", passwordError: true, passwordConfirmError: true
+                    ...prevState, error: "Password do not match", password: true, confirmPassword: true
                 }
             ))
         }
@@ -162,6 +173,7 @@ export default function RegisterForm() {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
+                                                error={errorState.forname}
                                                 autoComplete="forname"
                                                 name="forname"
                                                 variant="outlined"
@@ -176,6 +188,7 @@ export default function RegisterForm() {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
+                                                error={errorState.name}
                                                 variant="outlined"
                                                 required
                                                 fullWidth
@@ -190,6 +203,7 @@ export default function RegisterForm() {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
+                                                error={errorState.nickname}
                                                 variant="outlined"
                                                 required
                                                 fullWidth
@@ -204,7 +218,7 @@ export default function RegisterForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <TextField
-                                                error={errorState.mailError}
+                                                error={errorState.email}
                                                 variant="outlined"
                                                 required
                                                 fullWidth
@@ -218,7 +232,7 @@ export default function RegisterForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <TextField
-                                                error={errorState.passwordError}
+                                                error={errorState.password}
                                                 variant="outlined"
                                                 required
                                                 fullWidth
@@ -233,7 +247,7 @@ export default function RegisterForm() {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <TextField
-                                                error={errorState.passwordConfirmError}
+                                                error={errorState.confirmPassword}
                                                 variant="outlined"
                                                 required
                                                 fullWidth

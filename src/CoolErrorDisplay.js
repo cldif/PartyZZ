@@ -24,27 +24,28 @@ const CoolErrorDisplay = ({id, message, onClose}) => {
     const classes = useStyles();
 
     return (
-    <Snackbar
-        open
-        autoHideDuration={6000}
-        onClose={onClose}
-    >
-        <SnackbarContent
-            className={`${classes.margin} ${classes.snackbarContent}`}
-            aria-describedby={id}
-            message={
-                <span id={id} className={classes.message}>
-          <ErrorIcon className={`${classes.icon} ${classes.iconVariant}`}/>
-                    {message}
-        </span>
-            }
-            action={[
-                <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
-                    <CloseIcon className={classes.icon}/>
-                </IconButton>
-            ]}
-        />
-    </Snackbar>
-)};
+        <Snackbar
+            open
+            autoHideDuration={6000}
+            onClose={onClose}
+        >
+            <SnackbarContent
+                className={`${classes.margin} ${classes.snackbarContent}`}
+                aria-describedby={id}
+                message={
+                    <span id={id} className={classes.message}>
+                        <ErrorIcon className={`${classes.icon} ${classes.iconVariant}`}/>
+                        {message}
+                    </span>
+                }
+                action={[
+                    <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
+                        <CloseIcon className={classes.icon}/>
+                    </IconButton>
+                ]}
+            />
+        </Snackbar>
+    )
+};
 
 export default CoolErrorDisplay;
