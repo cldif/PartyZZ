@@ -40,23 +40,36 @@ export default function Login(props) {
   const classes = useStyles();
 
   const [successfulLogin, setSuccessfulLogin] = useState(false);
-  const [email, setEmail] = useState(undefined);
-  const [password, setPassword] = useState(undefined);
 
-  const [mailError, setMailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [displayErrorSnackBar, setDisplayErrorSnackBar] = useState(false);
+  const [formContent, setFormContent] = useState({
+    email: undefined,
+    password: undefined,
+  });
+
+  const [errorState, setErrorState] = useState({
+    email: false,
+    password: false,
+    displayErrorSnackBar: false,
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormContent((prevState) => ({ ...prevState, [id]: value }));
+    setErrorState((prevState) => ({ ...prevState, [id]: false }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(formContent.email, formContent.password)
       .then(() => setSuccessfulLogin(true))
       .catch((_error) => {
-        setDisplayErrorSnackBar(true);
-        setMailError(true);
-        setPasswordError(true);
+        setErrorState({
+          email: true,
+          password: true,
+          displayErrorSnackBar: true,
+        });
       });
   };
 
@@ -76,29 +89,25 @@ export default function Login(props) {
 
           <form onSubmit={handleSubmit}>
             <TextField
-              error={mailError}
+              id="email"
+              error={errorState.email}
               variant="outlined"
               margin="normal"
               fullWidth
               label="Email Address"
               autoFocus
-              onChange={(event) => {
-                setEmail(event.target.value);
-                setMailError(false);
-              }}
+              onChange={handleChange}
             />
             <TextField
-              error={passwordError}
+              id="password"
+              error={errorState.password}
               variant="outlined"
               margin="normal"
               fullWidth
               label="Password"
               type="password"
               autoComplete="current-password"
-              onChange={(event) => {
-                setPassword(event.target.value);
-                setPasswordError(false);
-              }}
+              onChange={handleChange}
             />
             <Button
               type="submit"
@@ -121,9 +130,14 @@ export default function Login(props) {
       </Container>
 
       <Snackbar
-        open={displayErrorSnackBar}
+        open={errorState.displayErrorSnackBar}
         autoHideDuration={2000}
-        onClose={() => setDisplayErrorSnackBar(false)}
+        onClose={() =>
+          setErrorState((previous) => ({
+            ...previous,
+            displayErrorSnackBar: false,
+          }))
+        }
       >
         <MuiAlert elevation={6} variant="filled" severity="error">
           Your email and password are not recognized.
