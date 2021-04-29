@@ -1,8 +1,8 @@
 import './App.css';
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import RegisterForm from "./RegisterForm";
-import AppHeader from "./AppHeader";
+import RegisterForm from "./routes/RegisterForm";
+import AppHeader from "./components/AppHeader";
 import {FirebaseAuthProvider} from "@react-firebase/auth";
 import firebase from "firebase/app";
 import {firebaseConfig} from "./index";

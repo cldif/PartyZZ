@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import CoolErrorDisplay from "./CoolErrorDisplay";
+import CoolErrorDisplay from "../components/CoolErrorDisplay";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 export default function RegisterForm() {
 
 
-    const [state, setState] = React.useState({
+    const [state, setState] = useState({
         email: "",
         password: "",
         confirmPassword: "",
@@ -70,7 +70,7 @@ export default function RegisterForm() {
         nickname: false,
         forname: false,
     };
-    const [errorState, setErrorState] = React.useState(baseErrorState)
+    const [errorState, setErrorState] = useState(baseErrorState)
 
     const handleChange = (e) => {
         const {id, value} = e.target
