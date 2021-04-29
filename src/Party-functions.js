@@ -1,4 +1,3 @@
-import Party from './Party';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -6,6 +5,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+
+import React from 'react';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { Chip } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -18,9 +27,19 @@ const useStyles = makeStyles((theme) => ({
     input: {
         display: 'none',
     },
-  }));
+    table: {
+        width: '90%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    paper: {
+        width: '60%',
+        marginRight: 'auto',
+        marginLeft: 'auto',
+    }
+}));
 
-export default function PartyRender({party, isUpdatable}){
+function PartyRender({party, isUpdatable}){
     party.initMembers(); // a enlever quand on aura de vraies donnees
 
     const classes = useStyles();
@@ -79,4 +98,53 @@ export default function PartyRender({party, isUpdatable}){
             <Button type="submit" variant="contained">Mise à jour</Button>
         </form>
     )
+}
+
+function createData(ownerId, id, name, guests) {
+    return { ownerId, id, name, guests };
+}
+
+const rows = [
+    createData(1, 10, "Nom 1", [1,2,3]),
+    createData(2, 20, "Nom un peu plus long", [3,2,1]),
+    createData(3, 30, "Nom sacrément long, c'est même exagéré là", [1,1,1]),
+    createData(4, 40, "Les 18 ans de Clément", [2,2,2]),
+    createData(5, 50, "L'enterrement de El Risitas", [3,3,3]),
+];
+
+function PartyList(){
+    const classes = useStyles();
+    return (
+        <TableContainer component={Paper} className={classes.paper}>
+            <h2>Liste des fêtes actuellement enregistrées</h2>
+            <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID hôte</TableCell>
+                        <TableCell>ID fête</TableCell>
+                        <TableCell>Nom</TableCell>
+                        <TableCell>Invités</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                {rows.map((row) => (
+                    <TableRow key={row.id}>
+                        <TableCell>{row.ownerId}</TableCell>
+                        <TableCell>{row.id}</TableCell>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.guests.map((guest) => (
+                            <Chip label={guest} />
+                        ))}
+                        </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+}
+
+export {
+    PartyRender,
+    PartyList,
 }

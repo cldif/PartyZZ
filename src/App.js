@@ -1,10 +1,10 @@
-
 import "./App.css";
 import Particles from "react-particles-js";
 import particlesConfig from "./config/particlesConfig";
 import SignIn from "./login";
 import Party from './Party';
 import PartyRender from './Party-functions';
+import {PartyList} from './Party-functions';
 
 import React from "react";
 import {
