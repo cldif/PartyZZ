@@ -13,20 +13,29 @@ import {
 import RegisterForm from "./routes/RegisterForm";
 import Login from "./routes/login";
 import AppHeader from "./components/AppHeader";
-import { FirebaseAuthProvider } from "@react-firebase/auth";
+import {
+  FirebaseAuthConsumer,
+  FirebaseAuthProvider,
+} from "@react-firebase/auth";
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
 
 const AuthenticatedRoute = (props) => {
   const location = useLocation();
 
-  if (firebase.auth().currentUser == null)
-    return (
-      <Redirect
-        to={{ pathname: "/login", state: { from: location.pathname } }}
-      />
-    );
-  return <Route {...props} />;
+  return (
+    <FirebaseAuthConsumer>
+      {({ isSignedIn }) => {
+        return isSignedIn ? (
+          <Route {...props} />
+        ) : (
+          <Redirect
+            to={{ pathname: "/login", state: { from: location.pathname } }}
+          />
+        );
+      }}
+    </FirebaseAuthConsumer>
+  );
 };
 
 export default function App() {
@@ -37,11 +46,11 @@ export default function App() {
           className="App"
           style={{ position: "relative", overflow: "hidden" }}
         >
+          <AppHeader />
           <div style={{ position: "absolute" }}>
             <Particles height="100vh" width="100vw" params={particlesConfig} />
           </div>
           <header className="App-header">
-            <AppHeader />
             <Switch>
               <Route path={"/login"} component={Login} />
               <Route path={"/register"} component={RegisterForm} />

@@ -16,6 +16,7 @@ import "firebase/auth";
 import "firebase/database";
 import {FirebaseAuthConsumer} from "@react-firebase/auth";
 import { Redirect } from 'react-router-dom';
+import { Paper } from '@material-ui/core';
 
 function Copyright() {
     return (
@@ -32,10 +33,10 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        padding: theme.spacing(3),
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
     },
     avatar: {
         margin: theme.spacing(1),
@@ -160,137 +161,139 @@ export default function RegisterForm() {
                     return <Redirect to="/home"/>;
                 } else {
                     return (
-                        <Container component="main" maxWidth="xs">
-                            <CssBaseline/>
-                            <div className={classes.paper}>
-                                <Avatar className={classes.avatar}>
-                                    <LockOutlinedIcon/>
-                                </Avatar>
-                                <Typography component="h1" variant="h5">
-                                    Sign up
-                                </Typography>
-                                <form className={classes.form} noValidate>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                error={errorState.forname}
-                                                autoComplete="forname"
-                                                name="forname"
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                id="forname"
-                                                label="First Name"
-                                                value={state.forname}
-                                                autoFocus
-                                                onChange={handleChange}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                error={errorState.name}
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                id="name"
-                                                label="Last Name"
-                                                name="name"
-                                                value={state.name}
-                                                autoComplete="lname"
-                                                onChange={handleChange}
+                        <Container component="main" maxWidth="sm">
+                            <Paper elevation={3} className={classes.paper}>
+                                <CssBaseline/>
+                                <div className={classes.paper}>
+                                    <Avatar className={classes.avatar}>
+                                        <LockOutlinedIcon/>
+                                    </Avatar>
+                                    <Typography component="h1" variant="h5">
+                                        Sign up
+                                    </Typography>
+                                    <form className={classes.form} noValidate>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} sm={6}>
+                                                <TextField
+                                                    error={errorState.forname}
+                                                    autoComplete="forname"
+                                                    name="forname"
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    id="forname"
+                                                    label="First Name"
+                                                    value={state.forname}
+                                                    autoFocus
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={6}>
+                                                <TextField
+                                                    error={errorState.name}
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    id="name"
+                                                    label="Last Name"
+                                                    name="name"
+                                                    value={state.name}
+                                                    autoComplete="lname"
+                                                    onChange={handleChange}
 
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                error={errorState.nickname}
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                id="nickname"
-                                                label="Nickname"
-                                                name="nickname"
-                                                value={state.nickname}
-                                                autoComplete="nickname"
-                                                onChange={handleChange}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={6}>
+                                                <TextField
+                                                    error={errorState.nickname}
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    id="nickname"
+                                                    label="Nickname"
+                                                    name="nickname"
+                                                    value={state.nickname}
+                                                    autoComplete="nickname"
+                                                    onChange={handleChange}
 
-                                            />
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    error={errorState.email}
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    id="email"
+                                                    label="Email Address"
+                                                    name="email"
+                                                    value={state.email}
+                                                    autoComplete="email"
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    error={errorState.password}
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    name="password"
+                                                    label="Password"
+                                                    type="password"
+                                                    id="password"
+                                                    value={state.password}
+                                                    autoComplete="current-password"
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    error={errorState.confirmPassword}
+                                                    variant="outlined"
+                                                    required
+                                                    fullWidth
+                                                    name="confirmPassword"
+                                                    label="Confirm Password"
+                                                    type="password"
+                                                    id="confirmPassword"
+                                                    value={state.confirmPassword}
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                error={errorState.email}
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                id="email"
-                                                label="Email Address"
-                                                name="email"
-                                                value={state.email}
-                                                autoComplete="email"
-                                                onChange={handleChange}
-                                            />
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.submit}
+                                            onClick={register}
+                                        >
+                                            Sign Up
+                                        </Button>
+                                        <Grid container justify="flex-end">
+                                            <Grid item>
+                                                <Link href={'/login'} color="primary">
+                                                    Already have an account? Sign in
+                                                </Link>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                error={errorState.password}
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                name="password"
-                                                label="Password"
-                                                type="password"
-                                                id="password"
-                                                value={state.password}
-                                                autoComplete="current-password"
-                                                onChange={handleChange}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                error={errorState.confirmPassword}
-                                                variant="outlined"
-                                                required
-                                                fullWidth
-                                                name="confirmPassword"
-                                                label="Confirm Password"
-                                                type="password"
-                                                id="confirmPassword"
-                                                value={state.confirmPassword}
-                                                onChange={handleChange}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.submit}
-                                        onClick={register}
-                                    >
-                                        Sign Up
-                                    </Button>
-                                    <Grid container justify="flex-end">
-                                        <Grid item>
-                                            <Link href={'/login'} color="primary">
-                                                Already have an account? Sign in
-                                            </Link>
-                                        </Grid>
-                                    </Grid>
-                                </form>
-                            </div>
-                            <Box mt={5}>
-                                <Copyright/>
-                            </Box>
-                            {errorState.error !== "" && (
-                                <CoolErrorDisplay
-                                    onClose={() => setErrorState(prevState => ({
-                                            ...prevState, error: ""
-                                        }
-                                    ))}
-                                    message={errorState.error}
-                                />
-                            )}
+                                    </form>
+                                </div>
+                                <Box mt={5}>
+                                    <Copyright/>
+                                </Box>
+                                {errorState.error !== "" && (
+                                    <CoolErrorDisplay
+                                        onClose={() => setErrorState(prevState => ({
+                                                ...prevState, error: ""
+                                            }
+                                        ))}
+                                        message={errorState.error}
+                                    />
+                                )}
+                            </Paper>
                         </Container>
                     );
                 }
