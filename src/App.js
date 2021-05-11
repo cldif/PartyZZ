@@ -20,10 +20,16 @@ import {
 } from "@react-firebase/auth";
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
-import RootContainer from "./rootContainer";
+import RootContainer from "./RootContainer";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
-const theme = createMuiTheme({ palette: { secondary: { main: "#666" } } });
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: "#3c425a", light: " #5b6076", contrastText: "#fff" },
+    secondary: { main: "#8d8191", light: "#bbb9bc" },
+    background: { paper: "#c4c8d9" },
+  },
+});
 
 const AuthenticatedRoute = (props) => {
   const location = useLocation();
@@ -50,7 +56,7 @@ export default function App() {
         <div className="App">
           <RootContainer>
             <Particles
-              style={{ position: "absolute", top: 20, left: 0 }}
+              style={{ position: "absolute", top: 0, left: 0 }}
               width="100vw"
               height="100wh"
               params={particlesConfig}

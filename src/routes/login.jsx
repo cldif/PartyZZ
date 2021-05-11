@@ -31,9 +31,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+  submit: { margin: theme.spacing(3, 0, 2) },
 }));
 
 export default function Login(props) {
