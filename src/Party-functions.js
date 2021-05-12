@@ -6,7 +6,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,11 +15,15 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Chip } from '@material-ui/core';
+import {Link} from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import firebase from "firebase/app";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
       margin: theme.spacing(1),
-      minWidth: 120,
+      minWidth: 300,
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
@@ -39,80 +43,119 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function PartyRender({party, isUpdatable}){
-    party.initMembers(); // a enlever quand on aura de vraies donnees
+function PartyRender({isUpdatable}){
+    const { id } = useParams();
+
+    const [state, setState] = React.useState({
+        party: null,
+        loading: true,
+    });
+    
+    const truc = async () => { 
+        const snapshot = await firebase.database().ref('partys/' + id).get();
+        if (snapshot.exists()) {
+            console.log(snapshot)
+            setState({
+                party: snapshot.val(),
+                loading: false,
+            });
+        } else {
+            console.log("No data available for this party");
+        }
+    };
+
+    useEffect(() => {
+        truc();
+    }, [] );
+
+    console.log(state);
+    console.log(state.party);
 
     const classes = useStyles();
 
-    return (
-        <form>
-            <h2>Affichage des détails de la fête <i>{party.name}</i></h2>
-            <TextField className={classes.formControl}
-                label="ID de l'hôte"
-                type="number"
-                defaultValue={party.ownerId}
-                InputProps={{
-                    readOnly: !isUpdatable,
-                }}
-            />
-            <TextField className={classes.formControl}
-                label="ID de la fête"
-                type="number"
-                defaultValue={party.id}
-                InputProps={{
-                    readOnly: true,
-                }}
-            />
-            <TextField className={classes.formControl}
-                label="Nom de la fête"
-                type="text"
-                defaultValue={party.name}
-                InputProps={{
-                    readOnly: !isUpdatable,
-                }}
-            />
-            <br></br>
-            <img src={party.imageURL} className={classes.formControl} width={200} alt="Slip">
-            </img>
-            <legend className={classes.formControl}>{party.imageName}</legend>
-            <TextField className={classes.formControl}
-                label="Nom de l'image"
-                type="text"
-                defaultValue={party.imageName}
-                InputProps={{
-                    readOnly: !isUpdatable,
-                }}
-            />
-            <FormControl className={classes.formControl}>
-                <InputLabel className={classes.formControl}>IDs des invités</InputLabel>
-                <Select className={classes.formControl}
-                    labelId="demo-simple-select-label"
-                    value={0}
-                    >
-                    {party.guestsIDs.map(guestID => (
-                        <MenuItem value={guestID} key={guestID}>{guestID}</MenuItem>
-                    ))} 
-                </Select>
-            </FormControl>
-            <br></br>
-            <Button type="submit" variant="contained">Mise à jour</Button>
-        </form>
-    )
+    return (state.loading !== true && state.partys !== null ? (
+        <Paper className={classes.paper}>
+            <form>
+                <h2>Affichage des détails de la fête <i>{state.party.name}</i></h2>
+                <TextField className={classes.formControl}
+                    label="ID de l'hôte"
+                    type="text"
+                    defaultValue={state.party.ownerId}
+                    InputProps={{
+                        readOnly: !isUpdatable,
+                    }}
+                />
+                <TextField className={classes.formControl}
+                    label="ID de la fête"
+                    type="text"
+                    defaultValue={state.party.id}
+                    InputProps={{
+                        readOnly: true,
+                    }}
+                />
+                <TextField className={classes.formControl}
+                    label="Nom de la fête"
+                    type="text"
+                    defaultValue={state.party.name}
+                    InputProps={{
+                        readOnly: !isUpdatable,
+                    }}
+                />
+                <br></br>
+                <img src={state.party.imageUrl} className={classes.formControl} width={200} alt={state.party.imageName}>
+                </img>
+                <legend className={classes.formControl}>{state.party.imageName}</legend>
+                <TextField className={classes.formControl}
+                    label="Nom de l'image"
+                    type="text"
+                    defaultValue={state.party.imageName}
+                    InputProps={{
+                        readOnly: !isUpdatable,
+                    }}
+                />
+                <FormControl className={classes.formControl}>
+                    <InputLabel className={classes.formControl}>IDs des invités</InputLabel>
+                    <Select className={classes.formControl}
+                        labelId="demo-simple-select-label"
+                        value={0}
+                        >
+                        {state.party.guestsIds.map(guestID => (
+                            <MenuItem value={guestID} key={guestID}>{guestID}</MenuItem>
+                        ))} 
+                    </Select>
+                </FormControl>
+                <br></br>
+                <Button type="submit" variant="contained">Mise à jour</Button>
+            </form>
+        </Paper>
+    ) : "No data")
 }
-
-function createData(ownerId, id, name, guests) {
-    return { ownerId, id, name, guests };
-}
-
-const rows = [
-    createData(1, 10, "Nom 1", [1,2,3]),
-    createData(2, 20, "Nom un peu plus long", [3,2,1]),
-    createData(3, 30, "Nom sacrément long, c'est même exagéré là", [1,1,1]),
-    createData(4, 40, "Les 18 ans de Clément", [2,2,2]),
-    createData(5, 50, "L'enterrement de El Risitas", [3,3,3]),
-];
 
 function PartyList(){
+    const [state, setState] = React.useState({
+        partys: null,
+        loading: true,
+    });
+    
+    const truc = async () => { 
+        const snapshot = await firebase.database().ref('partys/').get();
+        if (snapshot.exists()) {
+            setState({
+                partys: snapshot.val(),
+                loading: false,
+            });
+        } else {
+            console.log("No data available");
+        }
+    };
+
+    useEffect(() => {
+        truc();
+    }, [] );
+
+    console.log(state);
+    console.log(state.partys);
+
     const classes = useStyles();
     return (
         <TableContainer component={Paper} className={classes.paper}>
@@ -124,20 +167,26 @@ function PartyList(){
                         <TableCell>ID fête</TableCell>
                         <TableCell>Nom</TableCell>
                         <TableCell>Invités</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.ownerId}</TableCell>
-                        <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.guests.map((guest) => (
-                            <Chip label={guest} />
-                        ))}
-                        </TableCell>
-                    </TableRow>
-                ))}
+                {state.loading !== true && state.partys !== null ? Object.values(state.partys).map(row => {
+                    return (
+                        <TableRow key={row.id}>
+                            <TableCell>{row.ownerId}</TableCell>
+                            <TableCell>{row.id}</TableCell>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>{row.guestsIds.map((guest) => (
+                                <Chip key={guest} label={guest} />
+                            ))}
+                            </TableCell>
+                            <TableCell>
+                                <Button component={Link} color="inherit" to={'/detail/' + row.id}>Details</Button>
+                            </TableCell>
+                        </TableRow>
+                    )
+                }) : "no data"}
                 </TableBody>
             </Table>
         </TableContainer>
