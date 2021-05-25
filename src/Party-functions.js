@@ -51,10 +51,9 @@ function PartyRender({isUpdatable}){
         loading: true,
     });
     
-    const truc = async () => { 
+    const fetchPartyData = async () => { 
         const snapshot = await firebase.database().ref('partys/' + id).get();
         if (snapshot.exists()) {
-            console.log(snapshot)
             setState({
                 party: snapshot.val(),
                 loading: false,
@@ -65,15 +64,12 @@ function PartyRender({isUpdatable}){
     };
 
     useEffect(() => {
-        truc();
+        fetchPartyData();
     }, [] );
-
-    console.log(state);
-    console.log(state.party);
 
     const classes = useStyles();
 
-    return (state.loading !== true && state.partys !== null ? (
+    return (!state.loading && state.partys !== null ? (
         <Paper className={classes.paper}>
             <form>
                 <h2>Affichage des détails de la fête <i>{state.party.name}</i></h2>
@@ -137,7 +133,7 @@ function PartyList(){
         loading: true,
     });
     
-    const truc = async () => { 
+    const fetchPartyData = async () => { 
         const snapshot = await firebase.database().ref('partys/').get();
         if (snapshot.exists()) {
             setState({
@@ -150,11 +146,8 @@ function PartyList(){
     };
 
     useEffect(() => {
-        truc();
+        fetchPartyData();
     }, [] );
-
-    console.log(state);
-    console.log(state.partys);
 
     const classes = useStyles();
     return (
@@ -171,7 +164,7 @@ function PartyList(){
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {state.loading !== true && state.partys !== null ? Object.values(state.partys).map(row => {
+                {!state.loading && state.partys !== null ? Object.values(state.partys).map(row => {
                     return (
                         <TableRow key={row.id}>
                             <TableCell>{row.ownerId}</TableCell>
