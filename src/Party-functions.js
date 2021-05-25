@@ -119,8 +119,8 @@ function PartyRender({isUpdatable}){
                         labelId="demo-simple-select-label"
                         value={0}
                         >
-                        {state.party.guestsIds.map(guestID => (
-                            <MenuItem value={guestID} key={guestID}>{guestID}</MenuItem>
+                        {Object.values(state.party.guestsIds).map(guestID => (
+                            <MenuItem value={guestID.id} key={guestID.id}>{guestID.nickname}</MenuItem>
                         ))} 
                     </Select>
                 </FormControl>
@@ -177,8 +177,8 @@ function PartyList(){
                             <TableCell>{row.ownerId}</TableCell>
                             <TableCell>{row.id}</TableCell>
                             <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.guestsIds.map((guest) => (
-                                <Chip key={guest} label={guest} />
+                            <TableCell>{Object.values(row.guestsIds).map((guest) => (
+                                <Chip key={guest.id} label={guest.nickname} />
                             ))}
                             </TableCell>
                             <TableCell>
