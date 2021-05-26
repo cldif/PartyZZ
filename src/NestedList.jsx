@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -18,10 +18,31 @@ const useStyles = makeStyles((theme) => ({
   nested: { paddingLeft: theme.spacing(4) },
 }));
 
-export default function NestedList() {
+export default function NestedList({ shouldCloseAllItems, onItemExpand }) {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
-  const handleClick = () => setOpen(!open);
+  const [expand, setExpand] = useState({ partys: false });
+
+  const toggleExpand = (id) =>
+    setExpand((previous) => ({ ...previous, [id]: !previous[id] }));
+
+  const handleClick = (listEntryId) => {
+    const wasExpanded = expand[listEntryId];
+    toggleExpand(listEntryId);
+    if (!wasExpanded) {
+      onItemExpand();
+    }
+  };
+
+  useEffect(() => {
+    if (shouldCloseAllItems) {
+      setExpand((currentExpand) => {
+        Object.keys(currentExpand).map((key) => (currentExpand[key] = false));
+        return { ...currentExpand };
+      });
+    }
+  }, [shouldCloseAllItems]);
+
+  const entryIdentifiers = { partys: "partys" };
 
   return (
     <List
@@ -29,14 +50,19 @@ export default function NestedList() {
       aria-labelledby="nested-list-subheader"
       className={classes.root}
     >
-      <ListItem button onClick={handleClick}>
+      <ListItem button onClick={() => handleClick(entryIdentifiers.partys)}>
         <ListItemIcon>
           <LocalBarIcon />
         </ListItemIcon>
         <ListItemText primary="Fêtes" />
-        {open ? <ExpandLess /> : <ExpandMore />}
+        {expand[entryIdentifiers.partys] ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+
+      <Collapse
+        in={expand[entryIdentifiers.partys]}
+        timeout="auto"
+        unmountOnExit
+      >
         <List component="div" disablePadding>
           <ListItem button className={classes.nested}>
             <ListItemIcon>
@@ -52,12 +78,14 @@ export default function NestedList() {
           </ListItem>
         </List>
       </Collapse>
+
       <ListItem button>
         <ListItemIcon>
           <InfoIcon />
         </ListItemIcon>
         <ListItemText primary="A propos" />
       </ListItem>
+
       <ListItem button>
         <ListItemIcon>
           <FiberNewIcon />

@@ -94,16 +94,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RootContainer(props) {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const openMenu = () => setMenuIsOpen(true);
+  const closeMenu = () => setMenuIsOpen(false);
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, { [classes.appBarShift]: open })}
+        className={clsx(classes.appBar, { [classes.appBarShift]: menuIsOpen })}
         color="primary"
       >
         <Toolbar className={classes.toolbar}>
@@ -111,9 +111,9 @@ export default function RootContainer(props) {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={openMenu}
             className={clsx(classes.menuButton, {
-              [classes.menuButtonHidden]: open,
+              [classes.menuButtonHidden]: menuIsOpen,
             })}
           >
             <MenuIcon />
@@ -138,18 +138,18 @@ export default function RootContainer(props) {
         variant="permanent"
         classes={{
           paper: clsx(classes.drawerPaper, {
-            [classes.drawerPaperClose]: !open,
+            [classes.drawerPaperClose]: !menuIsOpen,
           }),
         }}
-        open={open}
+        open={menuIsOpen}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={closeMenu}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
-        <NestedList />
+        <NestedList shouldCloseAllItems={!menuIsOpen} onItemExpand={openMenu} />
       </Drawer>
       <main>{props.children}</main>
     </div>
