@@ -7,15 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 
 import React, { useEffect } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Chip } from '@material-ui/core';
-import {Link} from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import firebase from "firebase/app";
@@ -43,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function PartyRender({isUpdatable}){
+export default function PartyRender({isUpdatable}){
     const { id } = useParams();
 
     const [state, setState] = React.useState({
@@ -125,68 +117,4 @@ function PartyRender({isUpdatable}){
             </form>
         </Paper>
     ) : "No data")
-}
-
-function PartyList(){
-    const [state, setState] = React.useState({
-        partys: null,
-        loading: true,
-    });
-    
-    const fetchPartyData = async () => { 
-        const snapshot = await firebase.database().ref('partys/').get();
-        if (snapshot.exists()) {
-            setState({
-                partys: snapshot.val(),
-                loading: false,
-            });
-        } else {
-            console.log("No data available");
-        }
-    };
-
-    useEffect(() => {
-        fetchPartyData();
-    }, [] );
-
-    const classes = useStyles();
-    return (
-        <TableContainer component={Paper} className={classes.paper}>
-            <h2>Liste des fêtes actuellement enregistrées</h2>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID hôte</TableCell>
-                        <TableCell>ID fête</TableCell>
-                        <TableCell>Nom</TableCell>
-                        <TableCell>Invités</TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                {!state.loading && state.partys !== null ? Object.values(state.partys).map(row => {
-                    return (
-                        <TableRow key={row.id}>
-                            <TableCell>{row.ownerId}</TableCell>
-                            <TableCell>{row.id}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{Object.values(row.guestsIds).map((guest) => (
-                                <Chip key={guest.id} label={guest.nickname} />
-                            ))}
-                            </TableCell>
-                            <TableCell>
-                                <Button component={Link} color="inherit" to={'/detail/' + row.id}>Details</Button>
-                            </TableCell>
-                        </TableRow>
-                    )
-                }) : "no data"}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
-
-export {
-    PartyRender,
-    PartyList,
 }

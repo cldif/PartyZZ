@@ -1,7 +1,8 @@
 import "./App.css";
 import Particles from "react-particles-js";
 import particlesConfig from "./config/particlesConfig";
-import {PartyList, PartyRender} from './Party-functions';
+import PartyList from './PartyList';
+import PartyRender from './PartyRender';
 
 import React from "react";
 import {
