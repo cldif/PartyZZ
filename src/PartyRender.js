@@ -5,6 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import React, { useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
@@ -108,5 +109,7 @@ export default function PartyRender({isUpdatable}){
                 <Button type="submit" variant="contained">Mise à jour</Button>
             </form>
         </Paper>
-    ) : "No data")
+        ) : 
+        <LinearProgress />
+    )
 }

@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Chip } from '@material-ui/core';
 import {Link} from "react-router-dom";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import firebase from "firebase/app";
 
@@ -86,8 +87,10 @@ export default function PartyList(){
                                 <Button component={Link} color="inherit" to={'/detail/' + row.id}>Details</Button>
                             </TableCell>
                         </TableRow>
-                    )
-                }) : "no data"}
+                        )
+                    }) : 
+                    <LinearProgress />
+                }
                 </TableBody>
             </Table>
         </TableContainer>
