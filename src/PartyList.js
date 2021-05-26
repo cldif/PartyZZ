@@ -80,7 +80,7 @@ export default function PartyList(){
                             <TableCell>{row.ownerId.forname + ' ' + row.ownerId.name}</TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{Object.values(row.guestsIds).map((guest) => (
-                                <Chip key={guest.id} label={guest.nickname} />
+                                guest.nickname && <Chip key={guest.id} label={guest.nickname} />
                             ))}
                             </TableCell>
                             <TableCell>

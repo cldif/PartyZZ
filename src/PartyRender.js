@@ -6,6 +6,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Input from '@material-ui/core/Input';
+import Chip from '@material-ui/core/Chip';
 
 import React, { useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
@@ -34,8 +36,26 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 'auto',
         marginLeft: 'auto',
         padding: '1%',
-    }
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+      },
+      chip: {
+        margin: 2,
+      },
 }));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export default function PartyRender({isUpdatable}){
     const { id } = useParams();
@@ -96,14 +116,26 @@ export default function PartyRender({isUpdatable}){
                     }}
                 />
                 <FormControl className={classes.formControl}>
-                    <InputLabel className={classes.formControl}>IDs des invités</InputLabel>
-                    <Select className={classes.formControl}
-                        labelId="demo-simple-select-label"
-                        value={0}
+                    <InputLabel id="demo-mutiple-chip-label">IDs des invités</InputLabel>
+                    <Select
+                        labelId="demo-mutiple-chip-label"
+                        id="demo-mutiple-chip"
+                        multiple
+                        value={Object.values(state.party.guestsIds)}
+                        //onChange={handleChange}
+                        input={<Input id="select-multiple-chip" />}
+                        renderValue={() => (
+                            <div className={classes.chips}>
+                            {Object.values(state.party.guestsIds).map(guestID => (
+                                <Chip key={guestID.id} label={guestID.nickname || `${guestID.forname} ${guestID.name}`} className={classes.chip} />
+                            ))}
+                            </div>
+                        )}
+                        MenuProps={MenuProps}
                         >
                         {Object.values(state.party.guestsIds).map(guestID => (
-                            <MenuItem value={guestID.id} key={guestID.id}>{guestID.nickname}</MenuItem>
-                        ))} 
+                            <MenuItem value={guestID.id} key={guestID.id}>{guestID.nickname || `${guestID.forname} ${guestID.name}`}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
                 <br></br>
