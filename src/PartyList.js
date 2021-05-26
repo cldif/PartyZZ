@@ -66,9 +66,8 @@ export default function PartyList(){
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>ID hôte</TableCell>
-                        <TableCell>ID fête</TableCell>
-                        <TableCell>Nom</TableCell>
+                        <TableCell>Nom hôte</TableCell>
+                        <TableCell>Nom fête</TableCell>
                         <TableCell>Invités</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
@@ -77,8 +76,7 @@ export default function PartyList(){
                 {!state.loading && state.partys !== null ? Object.values(state.partys).map(row => {
                     return (
                         <TableRow key={row.id}>
-                            <TableCell>{row.ownerId}</TableCell>
-                            <TableCell>{row.id}</TableCell>
+                            <TableCell>{row.ownerId.forname + ' ' + row.ownerId.name}</TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{Object.values(row.guestsIds).map((guest) => (
                                 <Chip key={guest.id} label={guest.nickname} />

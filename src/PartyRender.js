@@ -66,19 +66,11 @@ export default function PartyRender({isUpdatable}){
             <form>
                 <h2>Affichage des détails de la fête <i>{state.party.name}</i></h2>
                 <TextField className={classes.formControl}
-                    label="ID de l'hôte"
+                    label="Nom de l'hôte"
                     type="text"
-                    defaultValue={state.party.ownerId}
+                    defaultValue={state.party.ownerId.forname + ' ' + state.party.ownerId.name}
                     InputProps={{
                         readOnly: !isUpdatable,
-                    }}
-                />
-                <TextField className={classes.formControl}
-                    label="ID de la fête"
-                    type="text"
-                    defaultValue={state.party.id}
-                    InputProps={{
-                        readOnly: true,
                     }}
                 />
                 <TextField className={classes.formControl}
