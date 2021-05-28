@@ -32,6 +32,12 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
+    paperContainer: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
     paper: {
         padding: theme.spacing(3),
         display: "flex",
@@ -161,7 +167,7 @@ export default function RegisterForm() {
                     return <Redirect to="/home"/>;
                 } else {
                     return (
-                        <Container component="main" maxWidth="sm">
+                        <Container className={classes.paperContainer} component="main" maxWidth="sm">
                             <Paper elevation={3} className={classes.paper}>
                                 <CssBaseline/>
                                 <div className={classes.paper}>

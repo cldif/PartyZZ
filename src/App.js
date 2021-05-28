@@ -1,8 +1,8 @@
 import "./App.css";
 import Particles from "react-particles-js";
 import particlesConfig from "./config/particlesConfig";
-import PartyList from './PartyList';
-import PartyRender from './PartyRender';
+import PartyList from "./PartyList";
+import PartyRender from "./PartyRender";
 
 import React from "react";
 import {
@@ -14,13 +14,16 @@ import {
 } from "react-router-dom";
 import RegisterForm from "./routes/RegisterForm";
 import Login from "./routes/login";
-import AppHeader from "./components/AppHeader";
 import {
   FirebaseAuthConsumer,
   FirebaseAuthProvider,
 } from "@react-firebase/auth";
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
+import RootContainer from "./rootContainer";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+
+const theme = createMuiTheme({ palette: { secondary: { main: "#666" } } });
 
 const AuthenticatedRoute = (props) => {
   const location = useLocation();
@@ -42,26 +45,27 @@ const AuthenticatedRoute = (props) => {
 
 export default function App() {
   return (
-    <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
-      <Router>
-        <div
-          className="App"
-          style={{ position: "relative", overflow: "hidden" }}
-        >
-          <AppHeader />
-          <div style={{ position: "absolute" }}>
-            <Particles height="100vh" width="100vw" params={particlesConfig} />
-          </div>
-          <header className="App-header">
-            <Switch>
-              <Route path={"/login"} component={Login} />
-              <Route path={"/register"} component={RegisterForm} />
-              <Route path={"/list"} component={PartyList} />
-              <Route path={"/detail/:id"} component={PartyRender} />
-            </Switch>
-          </header>
+    <MuiThemeProvider theme={theme}>
+      <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
+        <div className="App">
+          <RootContainer>
+            <Particles
+              style={{ position: "absolute", top: 20, left: 0 }}
+              width="100vw"
+              height="100wh"
+              params={particlesConfig}
+            />
+            <Router>
+              <Switch>
+                <Route path={"/login"} component={Login} />
+                <Route path={"/register"} component={RegisterForm} />
+                <Route path={"/list"} component={PartyList} />
+                <Route path={"/detail/:id"} component={PartyRender} />
+              </Switch>
+            </Router>
+          </RootContainer>
         </div>
-      </Router>
-    </FirebaseAuthProvider>
+      </FirebaseAuthProvider>
+    </MuiThemeProvider>
   );
 }
