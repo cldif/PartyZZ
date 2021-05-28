@@ -1,6 +1,8 @@
 import "./App.css";
 import Particles from "react-particles-js";
 import particlesConfig from "./config/particlesConfig";
+import PartyList from './PartyList';
+import PartyRender from './PartyRender';
 
 import React from "react";
 import {
@@ -54,6 +56,8 @@ export default function App() {
             <Switch>
               <Route path={"/login"} component={Login} />
               <Route path={"/register"} component={RegisterForm} />
+              <Route path={"/list"} component={PartyList} />
+              <Route path={"/detail/:id"} component={PartyRender} />
             </Switch>
           </header>
         </div>

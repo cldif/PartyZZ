@@ -34,6 +34,7 @@ export default function AppHeader() {
                     <Typography edge="start" variant="h6" className={classes.title}>
                         PartyZZ
                     </Typography>
+                    <Button component={Link} color="inherit" to={'/list'}>Parties</Button>
                     <FirebaseAuthConsumer>
                         {({isSignedIn, firebase}) => {
                             if (isSignedIn === true) {
