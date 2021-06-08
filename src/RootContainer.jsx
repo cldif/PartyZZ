@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -8,11 +9,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import NestedList from "./NestedList";
+import { Avatar, Button, Menu, MenuItem } from "@material-ui/core";
+import { PersonAdd, Input } from "@material-ui/icons";
+import firebase from "firebase/app";
 
 const drawerWidth = 240;
 
@@ -44,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+  },
+  appBarButton: {
+    marginLeft: theme.spacing(1),
   },
   menuButton: {
     marginRight: 36,
@@ -97,6 +102,13 @@ export default function RootContainer(props) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const openMenu = () => setMenuIsOpen(true);
   const closeMenu = () => setMenuIsOpen(false);
+  const [user, setUser] = useState(null);
+  const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
+
+  const openProfileMenu = (event) => setProfileMenuAnchor(event.currentTarget);
+  const closeProfileMenu = () => setProfileMenuAnchor(null);
+
+  firebase.auth().onAuthStateChanged(setUser);
 
   return (
     <div className={classes.root}>
@@ -127,11 +139,64 @@ export default function RootContainer(props) {
           >
             PartyZZ
           </Typography>
-          <IconButton color="inherit">
-            <Badge color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+
+          {user ? (
+            <div>
+              <IconButton onClick={openProfileMenu}>
+                <Avatar alt={user.displayName} src={user.photoURL} />
+              </IconButton>
+
+              <Menu
+                anchorEl={profileMenuAnchor}
+                keepMounted
+                open={Boolean(profileMenuAnchor)}
+                onClose={closeProfileMenu}
+              >
+                <Link
+                  to="/profile"
+                  style={{ color: "inherit", textDecoration: "inherit" }}
+                >
+                  <MenuItem onClick={closeProfileMenu}>Profile</MenuItem>
+                </Link>
+                <Link
+                  to="/"
+                  style={{ color: "inherit", textDecoration: "inherit" }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      closeProfileMenu();
+                      firebase.auth().signOut();
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Link>
+              </Menu>
+            </div>
+          ) : (
+            <div>
+              <Button
+                className={classes.appBarButton}
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to={"/login"}
+                startIcon={<Input />}
+              >
+                Login
+              </Button>
+              <Button
+                className={classes.appBarButton}
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to={"/register"}
+                startIcon={<PersonAdd />}
+              >
+                Register
+              </Button>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer

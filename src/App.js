@@ -54,22 +54,22 @@ export default function App() {
     <MuiThemeProvider theme={theme}>
       <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
         <div className="App">
-          <RootContainer>
-            <Particles
-              style={{ position: "absolute", top: 0, left: 0 }}
-              width="100vw"
-              height="100wh"
-              params={particlesConfig}
-            />
-            <Router>
+          <Router>
+            <RootContainer>
+              <Particles
+                style={{ position: "absolute", top: 0, left: 0 }}
+                width="100vw"
+                height="100wh"
+                params={particlesConfig}
+              />
               <Switch>
                 <Route path={"/login"} component={Login} />
                 <Route path={"/register"} component={RegisterForm} />
                 <Route path={"/list"} component={PartyList} />
                 <Route path={"/detail/:id"} component={PartyRender} />
               </Switch>
-            </Router>
-          </RootContainer>
+            </RootContainer>
+          </Router>
         </div>
       </FirebaseAuthProvider>
     </MuiThemeProvider>
