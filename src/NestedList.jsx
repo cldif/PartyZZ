@@ -12,6 +12,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import FiberNewIcon from "@material-ui/icons/FiberNew";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: { width: "100%", maxWidth: 360 },
@@ -64,7 +65,12 @@ export default function NestedList({ shouldCloseAllItems, onItemExpand }) {
         unmountOnExit
       >
         <List component="div" disablePadding>
-          <ListItem button className={classes.nested}>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to="/list"
+          >
             <ListItemIcon>
               <ListIcon />
             </ListItemIcon>

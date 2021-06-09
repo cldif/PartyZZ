@@ -9,36 +9,30 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Chip } from '@material-ui/core';
+import { Chip, Container } from '@material-ui/core';
 import {Link} from "react-router-dom";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import firebase from "firebase/app";
 
 const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 300,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    input: {
-        display: 'none',
-    },
-    table: {
-        width: '90%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
-    paper: {
-        width: '60%',
-        marginRight: 'auto',
-        marginLeft: 'auto',
-    }
+  paperContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -60%)",
+  },
+  paper: {
+    padding: theme.spacing(3),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
 }));
 
 export default function PartyList(){
+  const classes = useStyles();
+
     const [state, setState] = React.useState({
         partys: null,
         loading: true,
@@ -60,9 +54,15 @@ export default function PartyList(){
         fetchPartyData();
     }, [] );
 
-    const classes = useStyles();
-    return (
-        <TableContainer component={Paper} className={classes.paper}>
+  return (
+    <div>
+      <Container className={classes.paperContainer} maxWidth="lg">
+        <TableContainer
+          component={Paper}
+          elevation={3}
+          className={classes.paper}
+        >
+
             <h2>Liste des fêtes actuellement enregistrées</h2>
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
@@ -94,5 +94,7 @@ export default function PartyList(){
                 </TableBody>
             </Table>
         </TableContainer>
+      </Container>
+    </div>
     );
 }

@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Input from '@material-ui/core/Input';
 import Chip from '@material-ui/core/Chip';
+import { Container } from '@material-ui/core';
 
 import React, { useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
@@ -31,11 +32,17 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: 'auto',
     },
+    paperContainer: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -60%)",
+    },
     paper: {
-        width: '60%',
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        padding: '1%',
+        padding: theme.spacing(3),
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
     },
     chips: {
         display: 'flex',
@@ -84,64 +91,66 @@ export default function PartyRender({isUpdatable}){
     const classes = useStyles();
 
     return (!state.loading && state.partys !== null ? (
-        <Paper className={classes.paper}>
-            <form>
-                <h2>Affichage des détails de la fête <i>{state.party.name}</i></h2>
-                <TextField className={classes.formControl}
-                    label="Nom de l'hôte"
-                    type="text"
-                    defaultValue={state.party.ownerId.forname + ' ' + state.party.ownerId.name}
-                    InputProps={{
-                        readOnly: !isUpdatable,
-                    }}
-                />
-                <TextField className={classes.formControl}
-                    label="Nom de la fête"
-                    type="text"
-                    defaultValue={state.party.name}
-                    InputProps={{
-                        readOnly: !isUpdatable,
-                    }}
-                />
-                <br></br>
-                <img src={state.party.imageUrl} className={classes.formControl} width={200} alt={state.party.imageName}>
-                </img>
-                <legend className={classes.formControl}>{state.party.imageName}</legend>
-                <TextField className={classes.formControl}
-                    label="Nom de l'image"
-                    type="text"
-                    defaultValue={state.party.imageName}
-                    InputProps={{
-                        readOnly: !isUpdatable,
-                    }}
-                />
-                <FormControl className={classes.formControl}>
-                    <InputLabel id="demo-mutiple-chip-label">IDs des invités</InputLabel>
-                    <Select
-                        labelId="demo-mutiple-chip-label"
-                        id="demo-mutiple-chip"
-                        multiple
-                        value={Object.values(state.party.guestsIds)}
-                        //onChange={handleChange}
-                        input={<Input id="select-multiple-chip" />}
-                        renderValue={() => (
-                            <div className={classes.chips}>
+        <Container className={classes.paperContainer} maxWidth="md">
+            <Paper className={classes.paper}>
+                <form>
+                    <h2>Affichage des détails de la fête <i>{state.party.name}</i></h2>
+                    <TextField className={classes.formControl}
+                        label="Nom de l'hôte"
+                        type="text"
+                        defaultValue={state.party.ownerId.forname + ' ' + state.party.ownerId.name}
+                        InputProps={{
+                            readOnly: !isUpdatable,
+                        }}
+                    />
+                    <TextField className={classes.formControl}
+                        label="Nom de la fête"
+                        type="text"
+                        defaultValue={state.party.name}
+                        InputProps={{
+                            readOnly: !isUpdatable,
+                        }}
+                    />
+                    <br></br>
+                    <img src={state.party.imageUrl} className={classes.formControl} width={200} alt={state.party.imageName}>
+                    </img>
+                    <legend className={classes.formControl}>{state.party.imageName}</legend>
+                    <TextField className={classes.formControl}
+                        label="Nom de l'image"
+                        type="text"
+                        defaultValue={state.party.imageName}
+                        InputProps={{
+                            readOnly: !isUpdatable,
+                        }}
+                    />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-mutiple-chip-label">IDs des invités</InputLabel>
+                        <Select
+                            labelId="demo-mutiple-chip-label"
+                            id="demo-mutiple-chip"
+                            multiple
+                            value={Object.values(state.party.guestsIds)}
+                            //onChange={handleChange}
+                            input={<Input id="select-multiple-chip" />}
+                            renderValue={() => (
+                                <div className={classes.chips}>
+                                {Object.values(state.party.guestsIds).map(guestID => (
+                                    <Chip key={guestID.id} label={guestID.nickname || `${guestID.forname} ${guestID.name}`} className={classes.chip} />
+                                ))}
+                                </div>
+                            )}
+                            MenuProps={MenuProps}
+                            >
                             {Object.values(state.party.guestsIds).map(guestID => (
-                                <Chip key={guestID.id} label={guestID.nickname || `${guestID.forname} ${guestID.name}`} className={classes.chip} />
+                                <MenuItem value={guestID.id} key={guestID.id}>{guestID.nickname || `${guestID.forname} ${guestID.name}`}</MenuItem>
                             ))}
-                            </div>
-                        )}
-                        MenuProps={MenuProps}
-                        >
-                        {Object.values(state.party.guestsIds).map(guestID => (
-                            <MenuItem value={guestID.id} key={guestID.id}>{guestID.nickname || `${guestID.forname} ${guestID.name}`}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <br></br>
-                <Button type="submit" variant="contained">Mise à jour</Button>
-            </form>
-        </Paper>
+                        </Select>
+                    </FormControl>
+                    <br></br>
+                    <Button type="submit" variant="contained">Mise à jour</Button>
+                </form>
+            </Paper>
+        </Container>
         ) : 
         <LinearProgress />
     )
