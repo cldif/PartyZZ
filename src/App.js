@@ -1,8 +1,4 @@
-import "./App.css";
-import Particles from "react-particles-js";
-import particlesConfig from "./config/particlesConfig";
-import PartyList from "./PartyList";
-import PartyRender from "./PartyRender";
+import "./styles/App.css";
 
 import React from "react";
 import {
@@ -12,16 +8,21 @@ import {
   Switch,
   useLocation,
 } from "react-router-dom";
-import RegisterForm from "./routes/RegisterForm";
-import Login from "./routes/login";
 import {
   FirebaseAuthConsumer,
   FirebaseAuthProvider,
 } from "@react-firebase/auth";
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
-import RootContainer from "./RootContainer";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Particles from "react-particles-js";
+import particlesConfig from "./config/particlesConfig";
+
+import PartyList from "./routes/partyList";
+import PartyRender from "./routes/partyDetails";
+import RootContainer from "./components/RootContainer";
+import RegisterForm from "./routes/register";
+import Login from "./routes/login";
 
 const theme = createMuiTheme({
   palette: {
@@ -65,8 +66,11 @@ export default function App() {
               <Switch>
                 <Route path={"/login"} component={Login} />
                 <Route path={"/register"} component={RegisterForm} />
-                <Route path={"/list"} component={PartyList} />
-                <Route path={"/detail/:id"} component={PartyRender} />
+                <AuthenticatedRoute path={"/list"} component={PartyList} />
+                <AuthenticatedRoute
+                  path={"/detail/:id"}
+                  component={PartyRender}
+                />
               </Switch>
             </RootContainer>
           </Router>
