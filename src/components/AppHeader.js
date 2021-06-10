@@ -41,6 +41,7 @@ export default function AppHeader() {
                                 return (
                                     <div>
                                         <Button color="inherit" onClick={() => firebase.app().auth().signOut()}>Sign out</Button>
+                                        <Button component={Link} color="inherit" to={'/profile'}>Profile</Button>
                                     </div>
                                 );
                             }
