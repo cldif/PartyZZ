@@ -12,9 +12,10 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NestedList from "./NestedList";
-import { Avatar, Box, Button, List, ListItem, ListItemIcon, ListItemText, Popover } from "@material-ui/core";
-import { PersonAdd, Input, AccountBox, Settings } from "@material-ui/icons";
+import { Avatar, Button } from "@material-ui/core";
+import { PersonAdd, Input } from "@material-ui/icons";
 import firebase from "firebase/app";
+import ProfileMenu from "./ProfileMenu";
 
 const drawerWidth = 240;
 
@@ -82,9 +83,9 @@ export default function RootContainer(props) {
   const openMenu = () => setOpenStateOfNavMenu(true);
   const closeMenu = () => setOpenStateOfNavMenu(false);
 
-  const [anchorProfileMenu, setAnchorProfileMenu] = useState(null);
+  const [profileMenuAnchor, setAnchorProfileMenu] = useState(null);
   const openProfileMenu = (event) => setAnchorProfileMenu(event.currentTarget);
-  const closeProfileMenu = () => setAnchorProfileMenu(null);
+  const onClosingProfileMenu = () => setAnchorProfileMenu(null);
 
   return (
     <div className={classes.root}>
@@ -108,49 +109,7 @@ export default function RootContainer(props) {
               <IconButton onClick={openProfileMenu}>
                 <Avatar alt={user.displayName} src={user.photoURL} />
               </IconButton>
-              <Popover
-                PaperProps={{ style: { borderRadius: 16 } }}
-                className={classes.popover}
-                open={Boolean(anchorProfileMenu)}
-                anchorEl={anchorProfileMenu}
-                onClose={closeProfileMenu}
-                elevation={8}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                transformOrigin={{ vertical: "top", horizontal: "center" }}
-              >
-                <Box p={2}>
-                  <Typography variant="subtitle1">{user.displayName || "unknown username"}</Typography>
-                  <Typography variant="subtitle2">{user.email || "unknown email"} </Typography>
-                </Box>
-                <Divider />
-                <List dense component="nav">
-                  <ListItem button component={Link} to="/profile" onClick={closeProfileMenu}>
-                    <ListItemIcon>
-                      <AccountBox />
-                    </ListItemIcon>
-                    <ListItemText primary="Profile" />
-                  </ListItem>
-                  <ListItem button component={Link} to="/settings" onClick={closeProfileMenu}>
-                    <ListItemIcon>
-                      <Settings />
-                    </ListItemIcon>
-                    <ListItemText primary="Settings" />
-                  </ListItem>
-                </List>
-                <Box textAlign="center" mb={1} mx={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => {
-                      firebase.auth().signOut();
-                      closeProfileMenu();
-                    }}
-                  >
-                    Logout
-                  </Button>
-                </Box>
-              </Popover>
+              <ProfileMenu user={user} anchor={profileMenuAnchor} onClose={onClosingProfileMenu}></ProfileMenu>
             </div>
           ) : (
             <div>
