@@ -12,16 +12,14 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NestedList from "./NestedList";
-import { Avatar, Button, Menu, MenuItem } from "@material-ui/core";
-import { PersonAdd, Input } from "@material-ui/icons";
+import { Avatar, Box, Button, List, ListItem, ListItemIcon, ListItemText, Popover } from "@material-ui/core";
+import { PersonAdd, Input, AccountBox, Settings } from "@material-ui/icons";
 import firebase from "firebase/app";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
+  root: { display: "flex" },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -47,18 +45,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  appBarButton: {
-    marginLeft: theme.spacing(1),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: "none",
-  },
-  title: {
-    flexGrow: 1,
-  },
+  appBarButton: { marginLeft: theme.spacing(1) },
+  menuButton: { marginRight: 36 },
+  menuButtonHidden: { display: "none" },
+  title: { flexGrow: 1 },
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
@@ -74,104 +64,93 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(7),
-    },
+    [theme.breakpoints.up("sm")]: { width: theme.spacing(7) },
   },
   appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-  },
+  content: { flexGrow: 1, height: "100vh", overflow: "auto" },
+  container: { paddingTop: theme.spacing(4), paddingBottom: theme.spacing(4) },
+  paper: { padding: theme.spacing(2), display: "flex", overflow: "auto", flexDirection: "column" },
   fixedHeight: { height: 240 },
 }));
 
 export default function RootContainer(props) {
   const classes = useStyles();
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const openMenu = () => setMenuIsOpen(true);
-  const closeMenu = () => setMenuIsOpen(false);
   const [user, setUser] = useState(null);
-  const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
-
-  const openProfileMenu = (event) => setProfileMenuAnchor(event.currentTarget);
-  const closeProfileMenu = () => setProfileMenuAnchor(null);
-
   firebase.auth().onAuthStateChanged(setUser);
+
+  const [navMenuIsOpen, setOpenStateOfNavMenu] = useState(false);
+  const openMenu = () => setOpenStateOfNavMenu(true);
+  const closeMenu = () => setOpenStateOfNavMenu(false);
+
+  const [anchorProfileMenu, setAnchorProfileMenu] = useState(null);
+  const openProfileMenu = (event) => setAnchorProfileMenu(event.currentTarget);
+  const closeProfileMenu = () => setAnchorProfileMenu(null);
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="absolute"
-        className={clsx(classes.appBar, { [classes.appBarShift]: menuIsOpen })}
-        color="primary"
-      >
+      <AppBar position="absolute" className={clsx(classes.appBar, { [classes.appBarShift]: navMenuIsOpen })} color="primary">
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={openMenu}
-            className={clsx(classes.menuButton, {
-              [classes.menuButtonHidden]: menuIsOpen,
-            })}
+            className={clsx(classes.menuButton, { [classes.menuButtonHidden]: navMenuIsOpen })}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             PartyZZ
           </Typography>
-
           {user ? (
             <div>
               <IconButton onClick={openProfileMenu}>
                 <Avatar alt={user.displayName} src={user.photoURL} />
               </IconButton>
-
-              <Menu
-                anchorEl={profileMenuAnchor}
-                keepMounted
-                open={Boolean(profileMenuAnchor)}
+              <Popover
+                PaperProps={{ style: { borderRadius: 16 } }}
+                className={classes.popover}
+                open={Boolean(anchorProfileMenu)}
+                anchorEl={anchorProfileMenu}
                 onClose={closeProfileMenu}
+                elevation={8}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
               >
-                <Link
-                  to="/profile"
-                  style={{ color: "inherit", textDecoration: "inherit" }}
-                >
-                  <MenuItem onClick={closeProfileMenu}>Profile</MenuItem>
-                </Link>
-                <Link
-                  to="/"
-                  style={{ color: "inherit", textDecoration: "inherit" }}
-                >
-                  <MenuItem
+                <Box p={2}>
+                  <Typography variant="subtitle1">{user.displayName || "unknown username"}</Typography>
+                  <Typography variant="subtitle2">{user.email || "unknown email"} </Typography>
+                </Box>
+                <Divider />
+                <List dense component="nav">
+                  <ListItem button component={Link} to="/profile" onClick={closeProfileMenu}>
+                    <ListItemIcon>
+                      <AccountBox />
+                    </ListItemIcon>
+                    <ListItemText primary="Profile" />
+                  </ListItem>
+                  <ListItem button component={Link} to="/settings" onClick={closeProfileMenu}>
+                    <ListItemIcon>
+                      <Settings />
+                    </ListItemIcon>
+                    <ListItemText primary="Settings" />
+                  </ListItem>
+                </List>
+                <Box textAlign="center" mb={1} mx={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
                     onClick={() => {
-                      closeProfileMenu();
                       firebase.auth().signOut();
+                      closeProfileMenu();
                     }}
                   >
                     Logout
-                  </MenuItem>
-                </Link>
-              </Menu>
+                  </Button>
+                </Box>
+              </Popover>
             </div>
           ) : (
             <div>
@@ -201,12 +180,8 @@ export default function RootContainer(props) {
       </AppBar>
       <Drawer
         variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, {
-            [classes.drawerPaperClose]: !menuIsOpen,
-          }),
-        }}
-        open={menuIsOpen}
+        classes={{ paper: clsx(classes.drawerPaper, { [classes.drawerPaperClose]: !navMenuIsOpen }) }}
+        open={navMenuIsOpen}
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={closeMenu}>
@@ -214,7 +189,7 @@ export default function RootContainer(props) {
           </IconButton>
         </div>
         <Divider />
-        <NestedList shouldCloseAllItems={!menuIsOpen} onItemExpand={openMenu} />
+        <NestedList shouldCloseAllItems={!navMenuIsOpen} onItemExpand={openMenu} />
       </Drawer>
       <main>{props.children}</main>
     </div>
