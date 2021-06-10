@@ -12,7 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NestedList from "./NestedList";
-import { Avatar, Button } from "@material-ui/core";
+import { Avatar, Box, Button } from "@material-ui/core";
 import { PersonAdd, Input } from "@material-ui/icons";
 import firebase from "firebase/app";
 import ProfileMenu from "./ProfileMenu";
@@ -148,7 +148,9 @@ export default function RootContainer(props) {
           </IconButton>
         </div>
         <Divider />
-        <NestedList shouldCloseAllItems={!navMenuIsOpen} onItemExpand={openMenu} />
+        <Box style={{ overflow: "hidden" }}>
+          <NestedList shouldCloseAllItems={!navMenuIsOpen} onItemExpand={openMenu} />
+        </Box>
       </Drawer>
       <main>{props.children}</main>
     </div>
