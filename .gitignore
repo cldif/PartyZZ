@@ -24,3 +24,7 @@ yarn-error.log*
 
 # PhP Storm
 .idea/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
