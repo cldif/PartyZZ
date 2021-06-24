@@ -11,6 +11,8 @@ export default function EditProfile(props) {
     const state = props.state;
     const setState = props.setState;
 
+    const keysToValidate = ["name", "forname", "email", "nickname"];
+
     let baseErrorState = {
         error: false,
         errorMessage: "",
@@ -23,7 +25,6 @@ export default function EditProfile(props) {
 
     const handleChange = (e) => {
         const {id, value} = e.target
-        console.log(id)
         setState(prevState => ({
             ...prevState, profile: {...prevState.profile, [id]: value}
         }))
@@ -32,26 +33,30 @@ export default function EditProfile(props) {
     const [errorState, setErrorState] = useState(baseErrorState)
 
     const cancel = () => {
+        console.log(props.baseProfile)
         setState(prevState => ({
-            ...prevState, update: false
+            ...prevState, profile: {...state.profileBackup}, update: false
         }))
     }
 
-    const updateProfile = async (event) => {
-        setErrorState(baseErrorState);
+    const updateProfile = (event) => {
         event.preventDefault();
+        let error = false;
+        setErrorState({...baseErrorState});
 
         Object.keys(state.profile).forEach((key) => {
-            if (state[key] === "") {
+            if (keysToValidate.includes(key) && state.profile[key] === '') {
                 setErrorState(prevState => ({
                     ...prevState, [key]: true, error: true
                 }))
+                error = true;
             }
         })
 
-        if (!errorState.error) {
-            await firebase.database().ref(`/profiles/${state.user.uid}`).update(state.profile).then(() => {
-                    setState(prevState => ({...prevState, update: false}))
+        console.log(error);
+        if (!error) {
+            firebase.database().ref(`/profiles/${state.user.uid}`).update(state.profile).then(() => {
+                    setState(prevState => ({...prevState, update: false, profileBackup: {...state.profile}}))
                 }
             ).catch(error => {
                 setErrorState(prevState => ({
@@ -61,7 +66,7 @@ export default function EditProfile(props) {
         }
     }
 
-    const classes = this.props.classes;
+    const classes = props.classes;
 
     return (
         <form className="form">

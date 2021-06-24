@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import {Paper} from '@material-ui/core';
-import {Image} from "@material-ui/icons";
+import Avatar from "@material-ui/core/Avatar";
 import EditProfile from "../components/EditProfile";
 import ViewProfile from "../components/ViewProfile";
 
@@ -15,15 +15,16 @@ const useStyles = makeStyles((theme) => ({
             color: "black"
         }
     },
-    paper: {
+    container: {
         padding: theme.spacing(3),
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        flexWrap: "wrap"
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+    avatar_grid: {
+        display: "flex",
+        justifyContent: "center"
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -31,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+    },
+    avatar: {
+        width: theme.spacing(40),
+        height: theme.spacing(40),
     },
 }));
 
@@ -41,11 +46,13 @@ export default function Profile() {
         name: "",
         forname: "",
         nickname: "",
+        email: ""
     }
 
     const [state, setState] = useState({
         user: {},
         profile: baseProfile,
+        profileBackup: baseProfile,
         update: false,
         loading: true,
     })
@@ -58,7 +65,9 @@ export default function Profile() {
                 const query = firebase.database().ref(`/profiles/${user.uid}`)
                 query.on('value', function (data) {
                     setState(prevState => ({
-                        ...prevState, profile: {...prevState.profile, ...data.toJSON()}, loading: false, user: user
+                        ...prevState, profile: {...prevState.profile, ...data.toJSON(), email: user.email},
+                        profileBackup: {...prevState.profileBackup, ...data.toJSON(), email: user.email},
+                        loading: false, user: user
                     }))
                 })
             } else {
@@ -69,12 +78,12 @@ export default function Profile() {
 
     return (
         <Paper>
-            <Grid container>
+            <Grid container className={classes.container}>
                 <Grid item xs={12} sm={12}>
                     <h1>User Profile</h1>
                 </Grid>
-                <Grid item xs={6} sm={6}>
-                    <Image source={state.profile.imageURL} alt="profils pic"/>
+                <Grid item xs={6} sm={6} className={classes.avatar_grid}>
+                    <Avatar src={state.profile.imageURL !== "" ? state.profile.imageURL : "/user-ninja.png"} alt="profils pic" className={classes.avatar}/>
                 </Grid>
                 <Grid item xs={6} sm={6}>
                     {state.update ?

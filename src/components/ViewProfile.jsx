@@ -10,7 +10,7 @@ export default function ViewProfile(props) {
     const state = props.state;
     const setState = props.setState;
 
-    const classes = this.props.classes;
+    const classes = props.classes;
 
     const updateProfile = () => {
         setState(prevState => ({
