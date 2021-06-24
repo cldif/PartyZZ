@@ -10,7 +10,7 @@ import Input from '@material-ui/core/Input';
 import Chip from '@material-ui/core/Chip';
 import { Container } from '@material-ui/core';
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { useParams } from "react-router-dom";
 
@@ -72,21 +72,24 @@ export default function PartyRender({isUpdatable}){
         loading: true,
     });
     
-    const fetchPartyData = async () => { 
-        const snapshot = await firebase.database().ref('partys/' + id).get();
-        if (snapshot.exists()) {
-            setState({
-                party: snapshot.val(),
-                loading: false,
-            });
-        } else {
-            console.log("No data available for this party");
-        }
-    };
+    const fetchPartyData = useCallback(async () => {
+      const snapshot = await firebase
+        .database()
+        .ref("partys/" + id)
+        .get();
+      if (snapshot.exists()) {
+        setState({
+          party: snapshot.val(),
+          loading: false,
+        });
+      } else {
+        console.log("No data available for this party");
+      }
+    }, [id]);
 
     useEffect(() => {
         fetchPartyData();
-    }, [] );
+    }, [fetchPartyData]);
 
     const classes = useStyles();
 
