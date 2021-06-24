@@ -13,6 +13,7 @@ import { Paper, Snackbar } from "@material-ui/core";
 import firebase from "firebase/app";
 import "firebase/auth";
 import { Redirect } from "react-router-dom";
+import { FirebaseAuthConsumer } from "@react-firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
   paperContainer: {
@@ -37,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(props) {
   const classes = useStyles();
 
-  const [successfulLogin, setSuccessfulLogin] = useState(false);
-
   const [formContent, setFormContent] = useState({
     email: undefined,
     password: undefined,
@@ -56,12 +55,11 @@ export default function Login(props) {
     setErrorState((prevState) => ({ ...prevState, [id]: false }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     firebase
       .auth()
       .signInWithEmailAndPassword(formContent.email, formContent.password)
-      .then(() => setSuccessfulLogin(true))
       .catch((_error) => {
         setErrorState({
           email: true,
@@ -71,76 +69,76 @@ export default function Login(props) {
       });
   };
 
-  return successfulLogin ? (
-    <Redirect to={props.location.state?.from || "/"} />
-  ) : (
-    <div>
-      <Container className={classes.paperContainer} maxWidth="xs">
-        <Paper elevation={3} className={classes.paper}>
-          <Avatar className={classes.loginIcon}>
-            <LocalBarIcon />
-          </Avatar>
+  return (
+    <FirebaseAuthConsumer>
+      {({ isSignedIn }) => {
+        return isSignedIn ? (
+          <Redirect to={props.location.state?.from || "/"} />
+        ) : (
+          <div>
+            <Container className={classes.paperContainer} maxWidth="xs">
+              <Paper elevation={3} className={classes.paper}>
+                <Avatar className={classes.loginIcon}>
+                  <LocalBarIcon />
+                </Avatar>
 
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+                <Typography component="h1" variant="h5">
+                  Sign in
+                </Typography>
 
-          <form onSubmit={handleSubmit}>
-            <TextField
-              id="email"
-              error={errorState.email}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Email Address"
-              autoFocus
-              onChange={handleChange}
-            />
-            <TextField
-              id="password"
-              error={errorState.password}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Password"
-              type="password"
-              autoComplete="current-password"
-              onChange={handleChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    id="email"
+                    error={errorState.email}
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    label="Email Address"
+                    autoFocus
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    id="password"
+                    error={errorState.password}
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    onChange={handleChange}
+                  />
+                  <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                    Sign In
+                  </Button>
+                  <Grid container>
+                    <Grid item xs>
+                      <Link href="/register" variant="body2">
+                        {"Don't have an account? Sign Up"}
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </form>
+              </Paper>
+            </Container>
+
+            <Snackbar
+              open={errorState.displayErrorSnackBar}
+              autoHideDuration={2000}
+              onClose={() =>
+                setErrorState((previous) => ({
+                  ...previous,
+                  displayErrorSnackBar: false,
+                }))
+              }
             >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
-        </Paper>
-      </Container>
-
-      <Snackbar
-        open={errorState.displayErrorSnackBar}
-        autoHideDuration={2000}
-        onClose={() =>
-          setErrorState((previous) => ({
-            ...previous,
-            displayErrorSnackBar: false,
-          }))
-        }
-      >
-        <MuiAlert elevation={6} variant="filled" severity="error">
-          Your email and password are not recognized.
-        </MuiAlert>
-      </Snackbar>
-    </div>
+              <MuiAlert elevation={6} variant="filled" severity="error">
+                Your email and password are not recognized.
+              </MuiAlert>
+            </Snackbar>
+          </div>
+        );
+      }}
+    </FirebaseAuthConsumer>
   );
 }

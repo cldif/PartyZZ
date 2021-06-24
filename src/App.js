@@ -5,19 +5,10 @@ import PartyList from "./PartyList";
 import PartyRender from "./PartyRender";
 
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from "react-router-dom";
 import RegisterForm from "./routes/RegisterForm";
 import Login from "./routes/login";
-import {
-  FirebaseAuthConsumer,
-  FirebaseAuthProvider,
-} from "@react-firebase/auth";
+import { FirebaseAuthConsumer, FirebaseAuthProvider } from "@react-firebase/auth";
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
 import RootContainer from "./RootContainer";
@@ -37,13 +28,7 @@ const AuthenticatedRoute = (props) => {
   return (
     <FirebaseAuthConsumer>
       {({ isSignedIn }) => {
-        return isSignedIn ? (
-          <Route {...props} />
-        ) : (
-          <Redirect
-            to={{ pathname: "/login", state: { from: location.pathname } }}
-          />
-        );
+        return isSignedIn ? <Route {...props} /> : <Redirect to={{ pathname: "/login", state: { from: location.pathname } }} />;
       }}
     </FirebaseAuthConsumer>
   );
@@ -65,8 +50,8 @@ export default function App() {
               <Switch>
                 <Route path={"/login"} component={Login} />
                 <Route path={"/register"} component={RegisterForm} />
-                <Route path={"/list"} component={PartyList} />
-                <Route path={"/detail/:id"} component={PartyRender} />
+                <AuthenticatedRoute path={"/list"} component={PartyList} />
+                <AuthenticatedRoute path={"/detail/:id"} component={PartyRender} />
               </Switch>
             </RootContainer>
           </Router>

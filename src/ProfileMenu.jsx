@@ -41,8 +41,8 @@ export default function ProfileMenu({ user, anchor, onClose }) {
           variant="contained"
           color="primary"
           fullWidth
-          onClick={() => {
-            firebase.auth().signOut();
+          onClick={async () => {
+            await firebase.auth().signOut();
             onClose();
           }}
         >
