@@ -10,7 +10,7 @@ const particlesConfig = {
       },
     },
     color: {
-      value: "#ffffff",
+      value: "#93adf9",
     },
     shape: {
       type: "circle",
@@ -77,7 +77,7 @@ const particlesConfig = {
         mode: "bubble",
       },
       onclick: {
-        enable: true,
+        enable: false,
         mode: "repulse",
       },
       resize: true,
