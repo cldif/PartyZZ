@@ -22,11 +22,13 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "e2e": "cypress run",
-    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "cypress:open": "cypress open",
+    "e2e": "cypress run",
+    "e2e:debug": "BROWSER=none start-server-and-test start http://localhost:3000 cypress:open",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +64,7 @@
     "@testing-library/cypress": "^7.0.6",
     "cypress": "^7.6.0",
     "eslint-plugin-cypress": "^2.11.3",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "start-server-and-test": "^1.12.5"
   }
 }
