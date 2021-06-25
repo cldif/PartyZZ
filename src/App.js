@@ -22,6 +22,7 @@ const theme = createMuiTheme({
   },
 });
 
+// eslint-disable-next-line no-unused-vars
 const AuthenticatedRoute = (props) => {
   const location = useLocation();
 
