@@ -12,6 +12,7 @@ import { FirebaseAuthConsumer, FirebaseAuthProvider } from "@react-firebase/auth
 import firebase from "firebase/app";
 import { firebaseConfig } from "./index";
 import RootContainer from "./RootContainer";
+import Profile from "./routes/Profile";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
@@ -51,6 +52,7 @@ export default function App() {
               <Switch>
                 <Route path={"/login"} component={Login} />
                 <Route path={"/register"} component={RegisterForm} />
+                <AuthenticatedRoute path={"/profile"} component={Profile} />
                 <AuthenticatedRoute path={"/list"} component={PartyList} />
                 <AuthenticatedRoute path={"/detail/:id"} component={PartyRender} />
               </Switch>
